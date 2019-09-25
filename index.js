@@ -17,7 +17,7 @@ app.use('/dist', express.static(path.resolve(__dirname, './dist')));
 
 app.get('*', function (req, res) {
    
-    res.sendFile('./index.html', { root: path.join(__dirname, '') });
+    res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
 })
 
 const port = 3000 || process.env.PORT

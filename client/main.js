@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 const App = () => {
-    return <div>Test Server</div>
+    return <div>React App</div>
 }
 
 ReactDOM.render(
