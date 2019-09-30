@@ -1,8 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import SignUp from './containers/signup'
 
 const App = () => {
-    return <div>React App</div>
+    return (<div >
+            <SignUp />
+    </div>)
 }
 
 ReactDOM.render(
