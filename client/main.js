@@ -1,15 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import SignUp from './containers/signup'
+import ProjectRouter from './projectRouter'
+import {BrowserRouter} from 'react-router-dom'
+
 
 const App = () => {
     return (<div >
-            <SignUp />
+            <ProjectRouter />
     </div>)
 }
 
 ReactDOM.render(
-    <App />,
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>,
     document.getElementById("root")
 )
 
