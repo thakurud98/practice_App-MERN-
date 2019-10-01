@@ -33,6 +33,7 @@ const User = mongoose.model("User", {
         required: true,
         minLength: 7,
         trim: true,
+        select: false,  // to not send on find requests
         validate(val){
             if(val.toLowerCase().includes('password')){
                 throw new Error("Password can't be password")

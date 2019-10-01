@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ProjectRouter from './projectRouter'
-import {BrowserRouter} from 'react-router-dom'
 
 
 const App = () => {
@@ -11,9 +10,7 @@ const App = () => {
 }
 
 ReactDOM.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
+        <App />,
     document.getElementById("root")
 )
 

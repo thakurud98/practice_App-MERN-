@@ -35,7 +35,11 @@ app.get('/sse-server', function(req, res){
 })
 
 
-app.post("/v1/api/users", (req, res)=>{
+/**API for creating a user 
+ * @param Object
+ * @return Object
+*/
+app.post("/v1/api/create_users", (req, res)=>{
     const user = User(req.body)
     user.save().then(()=>{
        return res.status(400).send({
@@ -51,6 +55,74 @@ app.post("/v1/api/users", (req, res)=>{
             })
     })    
 })
+
+/**API for getting All user's data
+ * @return Object
+ */
+app.get("/v1/api/get_users", async (req, res)=>{
+    User.find({}).then((users)=>{
+        return res.status(200).send({
+            msg: null,
+            data: users,
+            error: false
+        })
+    }).catch((er)=>{
+        return res.status(500).send({
+            msg: er,
+            data: null,
+            error: true
+        })
+    })
+})
+
+/**API fro getting user Data by Id
+ * @param id
+ * @returns Object
+ */
+app.get("/v1/api/user_by_id/:id", async (req, res)=>{
+    let _id = req.params.id
+    //using select to not send _v in response
+    User.findById(_id).select("-__v").then((user)=>{
+        if(!user) {
+            return res.status(404).send({
+                "msg":"User not Found",
+                "data": null,
+                "error" : true
+            })
+        }
+        return res.status(200).send({
+            msg: null,
+            data: user,
+            error: false
+        })
+    }).catch((er)=>{
+        return res.status(500).send({
+            msg: er,
+            data: null,
+            error: true
+        })
+    })
+})
+
+app.delete("/v1/api/delete_by_id/:id", async (req, res)=>{
+    let _id = req.params.id
+    User.findByIdAndDelete(_id).select("-password").then((user)=>{
+        console.log("user==========",user)
+        if(user === null) return res.status(404).send({ msg: "User not found", data: null, error: true })
+        return User.countDocuments({ age: 0 });
+    }).then((result)=>{
+        console.log("result==========",result)
+    }).catch((e)=>{
+        console.log("e==========",e)
+    })
+    
+})
+
+/**API fro updating a user's document 
+ * @param Object
+ * @returns Object
+*/
+
 
 
 app.get('*', function (req, res) {
