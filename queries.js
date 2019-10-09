@@ -81,3 +81,46 @@
         const UserName = new User({name: "uday", age : 24, email : 4})
 
         UserName.save().then((res)=>console.log("data saved=============",res)).catch((e)=>console.log("er============",e))
+
+
+
+    /**Mongoose update query */
+    const User = require('./src/model/user')
+
+    User.findByIdAndUpdate(data.id,{$set:{age : data.age}}, {new: true}).then((user)=>{
+        console.log("user==========",user)
+        return User.countDocuments({ age : data.age})
+    }).then((result)=>{
+        console.log("result==========",result)
+        return res.status(200).send({ msg: "User has been updated", data: result, error: false });
+    }).catch((e)=>{
+        console.log("e==========",e)
+    })
+
+    /**update query using async await */
+    try{
+        const user = await User.findByIdAndUpdate(data.id,{$set:{age : data.age}}, {new: true})
+        console.log("user==========",user)
+        if(!user){
+            return res.status(404).send({ msg: "No record found for this user", data: null, error: true });
+        } 
+        return res.status(200).send({ msg: "User has been updated", data: user, error: false });
+    }catch(e){
+        return res.status(500).send({ msg: e, data: null, error: true });
+    }
+
+    /** Hashing password using bcrypt */
+    const brcypt = require('bcryptjs')
+    const myFunctoin = async (pass) => {
+        // bcrypt does indeed use promises
+        const hashPass = await brcypt.hash(pass, 8)   //returns promise, takes 2 arguments (string, algorithm)
+        console.log("password", pass)
+        console.log("hash password", hashPass)
+
+        //to check encrypted value
+        const res = await brcypt.compare(pass, hashPass)
+        console.log("password matched", res)
+
+    }
+
+    myFunctoin("Red12345!")
