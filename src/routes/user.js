@@ -18,14 +18,13 @@ router.post("/v1/api/create_users", async (req, res)=>{
     }    
 })
 
-/**API for getting All user's data
+
+/**API for reading user profile
  * @return Object
  */
-router.get("/v1/api/get_users", auth, async (req, res)=>{
+router.get("/v1/api/get_user/me", auth, async (req, res)=>{
     try{
-        let user = await User.find({})
-        if(!user) return res.status(404).send({ msg: "No records found", data: null, error: true });
-        return res.status(200).send({ msg: null, data: user, error: false });
+        res.status(200).send({"msg":"", "data": req.user,"error" : false})
     }catch(e){
         return res.status(500).send({ msg: e, data: null, error: true });
     }
@@ -102,8 +101,36 @@ router.post("/v1/api/login", async (req, res)=>{
         const token = await user.generateAuthToken()
         return res.status(200).send({ msg: "Login successfull", data: {user, token}, error: false });
     }catch(e){
-        return res.status(500).send({ msg: e.toString(), data: null, error: true });
+        return res.send({ msg: e.toString(), data: null, error: true });
     }    
+})
+
+/**API for logout user single session
+ * @param Object
+ * @returns Object
+*/
+router.post("/v1/api/logout", auth, async (req, res)=>{
+    try{
+        req.user.tokens = req.user.tokens.filter((token)=>  token.token !== req.token )
+        await req.user.save()
+        return res.send({ msg: "Logged out successfully", data: null, error: false });
+    }catch(e){
+        return res.status(500).send({ msg: e.toString(), data: null, error: true });
+    }
+})
+
+/**API for logout user from all session
+ * @param Object
+ * @returns Object
+*/
+router.post("/v1/api/logoutAll", auth, async (req, res)=>{
+    try{
+        req.user.tokens = []
+        await req.user.save()
+        return res.send({ msg: "Logged out successfully", data: null, error: false });
+    }catch(e){
+        return res.status(500).send({ msg: e.toString(), data: null, error: true });
+    }
 })
 
 module.exports = router

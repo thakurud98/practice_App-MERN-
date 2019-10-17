@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "./node_modules/.bin/webpack",
-    "watch": "concurrently \"./node_modules/.bin/webpack  --mode=development --watch  \" \"nodemon index.js\"",
+    "watch": "concurrently \"./node_modules/.bin/webpack  -d -w  \" \"nodemon index.js\"",
     "start:dev": "concurrently \"webpack-dev-server  --mode development --watch  \" \"nodemon index.js\""
   },
   "author": "Uday Singh",
@@ -14,6 +14,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "bootstrap": "^4.3.1",
     "concurrently": "^4.1.2",
     "cors": "^2.8.5",
     "css-loader": "^3.2.0",
@@ -22,6 +23,7 @@
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.1",
     "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",

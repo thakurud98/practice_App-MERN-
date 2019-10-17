@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ProjectRouter from './projectRouter'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "./public/css/main.css"
 
 
 const App = () => {
