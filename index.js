@@ -11,7 +11,8 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 const port = 4500 || process.env.PORT
-const userRouter = require('./src/routes/user')
+const userRouter = require('./src/routes/user');
+const taskRouter = require('./src/routes/task');
 
 
 // Loading React Client 
@@ -38,7 +39,8 @@ app.get('/sse-server', function(req, res){
 })
 
 /**Using routes */
-app.use(userRouter)
+app.use(userRouter);
+app.use(taskRouter);
 
 
 /**API for creating a user 
@@ -86,17 +88,28 @@ app.listen(port, ()=>{
 
 
 /** example of JWT for tokens */
-const myFunctoin = async () => {
-    try{
-        let token = jwt.sign({"id": "123456789"}, "myTaskApp", {expiresIn: '15 seconds'})
-        console.log("token=========", token)
+// const myFunctoin = async () => {
+//     try{
+//         let token = jwt.sign({"id": "123456789"}, "myTaskApp", {expiresIn: '15 seconds'})
+//         console.log("token=========", token)
         
-        const data = jwt.verify(token, "myTaskApp")
-        console.log("data=========", data)
-    }catch(e){
-        console.log(e)
-    }
+//         const data = jwt.verify(token, "myTaskApp")
+//         console.log("data=========", data)
+//     }catch(e){
+//         console.log(e)
+//     }
+// }
+
+/**Exampl of db relation */
+const myFunction = async () => {
+    const Task = require('./src/model/task')
+    const User = require('./src/model/user')
+    try{
+        const task = await Task.findById('5dad73a8c8ed4c38e338d3f2')
+        await task.populate('owner').execPopulate()
+        console.log('owner from populate===========', task.owner)
+    }catch(e) { console.log("eroo=-===========",e)}
 }
 
-// myFunctoin()
+myFunction()
 // myFunctoin("Red123!") for bcrypt

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Card, Button, Container, Row } from 'react-bootstrap'
+import { Card, Button, Container, Row, Alert } from 'react-bootstrap'
 import axios from 'axios';
 import * as constants from  '../constants'
+import {successPop, errorPop} from  './popMessage'
 
 class UserProfile extends Component {
     constructor(props){
@@ -53,8 +54,8 @@ class UserProfile extends Component {
                         </Card.Body>
                         <Card.Footer className="text-muted">last login</Card.Footer>
                     </Card>
-
-                    {successMessage, errorMessage}
+                    {successMessage !="" ? successPop(successMessage) : ""}
+                    {errorMessage !="" ? errorPop(errorMessage) : ""}
             </Container>
         )
     }

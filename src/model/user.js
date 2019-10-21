@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Task = require('./task')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -48,6 +49,20 @@ const userSchema = new mongoose.Schema({
     }]
 }, {collection: 'user'})
 
+
+
+/**Method to send profile data 
+ * return user Object for profile
+*/
+userSchema.methods.toJSON =  function () {
+    let user = this
+    //mongoose function for creating object
+    let userObject = user.toObject()
+    delete userObject.password
+    delete userObject.tokens
+    delete userObject.__v
+    return userObject
+}
 
 /**Checking user availability */
 /**this is a model method */

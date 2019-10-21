@@ -12,7 +12,7 @@ router.post("/v1/api/create_users", async (req, res)=>{
     try{
         let user = User(req.body)
         await user.save();
-        return res.status(200).json({"msg":"User created", "data": user,"error" : false})
+        return res.status(200).send({"msg":"User created", "data": user,"error" : false})
     }catch(e){
         return res.status(500).json({"msg":"SERVER-ERROR", "data": e,"error" : true})
     }    
@@ -30,10 +30,11 @@ router.get("/v1/api/get_user/me", auth, async (req, res)=>{
     }
 })
 
-/**API fro getting user Data by Id
+/*
+    *API fro getting user Data by Id
  * @param id
  * @returns Object
- */
+ 
 router.get("/v1/api/user_by_id/:id", async (req, res)=>{
     //using select to not send _v in respons
     try{
@@ -45,15 +46,14 @@ router.get("/v1/api/user_by_id/:id", async (req, res)=>{
         return res.status(500).send({ msg: e, data: null, error: true });
     }
 })
-
-router.delete("/v1/api/delete_by_id/:id", async (req, res)=>{
+*/
+router.delete("/v1/api/delete_by_id/me", auth, async (req, res)=>{
     try{
-        let _id = req.params.id
-        let user = await  User.findByIdAndDelete(_id).select("-password")
-        if(!user) return res.status(404).send({ msg: "User not found", data: null, error: true })
-        return res.status(200).send({ msg: null, data: "User deleted", error: false });
+        // we are gonne user remove() on mongoose document
+        await req.user.remove()
+        return res.status(200).send({ msg: "User deleted", data: req.user, error: false });
     }catch(e){
-        return res.status(500).send({ msg: e, data: null, error: true });
+        return res.status(200).send({ msg: e, data: null, error: true });
     }
     
 })
@@ -62,27 +62,16 @@ router.delete("/v1/api/delete_by_id/:id", async (req, res)=>{
  * @param Object
  * @returns Object
 */
-router.patch("/v1/api/update_by_id/:id", async (req, res)=>{
+router.patch("/v1/api/update_by_id/me", auth, async (req, res)=>{
     try{
         let {data} = req.body
-        let id = req.params.id
-        if(id == undefined || id === undefined || id === '') return res.status(400).send({ msg: "Invalid or null id", data: null, error: true })
         let updates = Object.keys(data)
         let allowedUpdates = ['name', 'age', 'email', 'password']
         const isValidRequest = updates.every((update)=> allowedUpdates.includes(update))
         if (!isValidRequest) return res.status(400).send({ msg: "Invalid updates", data: null, error: true });
-
-        // const user = await User.findByIdAndUpdate(id,{ $set: data }, {new: true, runValidators: true})
-        /**As we need to use middleware we may have to use save() to work with mongoose, as findByIdAndUpdate directly works with mongoDB*/
-        const user = await User.findById(req.params.id)
-        console.log("user========== old",user)
-        if(!user){
-            return res.status(404).send({ msg: "No record found for this user", data: null, error: true });
-        }
-        updates.forEach((update)=> user[update] = data[update])
-        console.log("user========== new",user)
-        await user.save() 
-        return res.status(200).send({ msg: "User has been updated", data: user, error: false });
+        updates.forEach((update)=> req.user[update] = data[update])
+        await req.user.save() 
+        return res.status(200).send({ msg: "User has been updated", data: req.user, error: false });
     }catch(e){
         return res.status(500).send({ msg: e, data: null, error: true });
     }    
@@ -97,7 +86,6 @@ router.post("/v1/api/login", async (req, res)=>{
 
         /**This method can be use for all, thats why we have used User */
         const user = await User.findByCredentials(req.body.data.email, req.body.data.password)
-        /**This method can be triiggered for user, that's why it is 'user.' */
         const token = await user.generateAuthToken()
         return res.status(200).send({ msg: "Login successfull", data: {user, token}, error: false });
     }catch(e){
