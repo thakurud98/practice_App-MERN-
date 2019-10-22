@@ -8,6 +8,11 @@ const taskSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        validate(val) {
+            if(val.length < 0 || val.length >50){
+                throw new Error("description can't be more than 50 words")
+            }
+        }
     },
     completed: {
         type: Boolean,

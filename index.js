@@ -100,16 +100,28 @@ app.listen(port, ()=>{
 //     }
 // }
 
-/**Exampl of db relation */
+/**Exampl of db relation find user through task*/
+// const myFunction = async () => {
+//     const Task = require('./src/model/task')
+//     try{
+//         const task = await Task.findById('5dad73a8c8ed4c38e338d3f2')
+//         await task.populate('owner').execPopulate()
+//         console.log('owner from populate===========', task.owner)
+//     }catch(e) { console.log("eroo=-===========",e)}
+// }
+
+/**Exampl of db relation find task through user*/
+const Task = require('./src/model/task')
 const myFunction = async () => {
-    const Task = require('./src/model/task')
     const User = require('./src/model/user')
+    // 5dad54461d6b6628c0d36ad7 example user id
     try{
-        const task = await Task.findById('5dad73a8c8ed4c38e338d3f2')
-        await task.populate('owner').execPopulate()
-        console.log('owner from populate===========', task.owner)
-    }catch(e) { console.log("eroo=-===========",e)}
+        const user = await User.findById('5dad54461d6b6628c0d36ad7')
+        await user.populate('tasks').execPopulate()
+        console.log("user=========", user)
+        console.log("user.task=========", user.tasks)
+    }catch(e) { console.log("eroo============",e)}
 }
 
-myFunction()
+// myFunction()
 // myFunctoin("Red123!") for bcrypt

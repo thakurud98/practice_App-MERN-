@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         validate(val) {
-            if(val < 0){
+            if (val < 0) {
                 throw new Error('Age must be a positive number')
             }
         }
@@ -29,32 +29,37 @@ const userSchema = new mongoose.Schema({
             if (!validator.isEmail(val)) throw new Error('Invalid Email')
         }
     },
-    password:{
+    password: {
         type: String,
         required: true,
         minLength: 7,
         trim: true,
         // select: false,  // to not send on find requests
-        validate(val){
-            if(val.toLowerCase().includes('password')){
+        validate(val) {
+            if (val.toLowerCase().includes('password')) {
                 throw new Error("Password can't be password")
             }
         }
     },
     tokens: [{
-        token:{
+        token: {
             type: String,
             required: true
         }
     }]
-}, {collection: 'user'})
+}, { collection: 'user' })
 
-
+/**Virtual fields for relation with Task Collection */
+userSchema.virtual('tasks', {
+    ref: "Task",
+    localField: "_id",
+    foreignField: "owner"
+})
 
 /**Method to send profile data 
  * return user Object for profile
 */
-userSchema.methods.toJSON =  function () {
+userSchema.methods.toJSON = function () {
     let user = this
     //mongoose function for creating object
     let userObject = user.toObject()
@@ -66,11 +71,11 @@ userSchema.methods.toJSON =  function () {
 
 /**Checking user availability */
 /**this is a model method */
-userSchema.statics.findByCredentials = async (email, password) =>{
-    const user = await User.findOne({email})
-    if(!user) throw new Error('No user found for this Email')
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ email })
+    if (!user) throw new Error('No user found for this Email')
     const isMached = await bcrypt.compare(password, user.password)
-    if(!isMached) throw new Error('Wrong Password')
+    if (!isMached) throw new Error('Wrong Password')
     return user
 }
 
@@ -78,7 +83,7 @@ userSchema.statics.findByCredentials = async (email, password) =>{
 userSchema.methods.generateAuthToken = async function () {
     let user = this
     //generate jwt
-    const token = jwt.sign({_id: user._id.toString()}, "Task-Manager-App")
+    const token = jwt.sign({ _id: user._id.toString() }, "Task-Manager-App")
     //storing token in user's data
     user.tokens = user.tokens.concat({ token })
     await user.save();
@@ -90,12 +95,12 @@ pre is for before function call, (mongooseQueryr, standad function not an arrow 
 = reffering this as the data('user') which is going to be saved
 = next() will assure that the process of this pre() has been done
 */
-userSchema.pre('save', async function(next){
-     let user = this
-    if(user.isModified('password')){
+userSchema.pre('save', async function (next) {
+    let user = this
+    if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
-     next()
+    next()
 })
 
 const User = mongoose.model("User", userSchema)
