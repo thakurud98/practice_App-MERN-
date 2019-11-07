@@ -5,14 +5,41 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 require('./mongoose')
 const jwt = require('jsonwebtoken')
+const port = 4500 || process.env.PORT
+const userRouter = require('./src/routes/user');
+const taskRouter = require('./src/routes/task');
 
 
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-const port = 4500 || process.env.PORT
-const userRouter = require('./src/routes/user');
-const taskRouter = require('./src/routes/task');
+
+
+const multer = require('multer')
+//configure multer for files like only pdf's, images's doc's etc
+//we may hve to configure multer for multiple times for a single application depending on the needs
+//this is just for learning in the file, will allow any file to upload to the server
+const upload = multer({
+    dest: 'image'
+})
+//calling multer() with an instance, which is an option object where we provide all the configuration tool, for the moment we provide just one property
+//called 'dest' which is use for destination, and this is the only one we need ot get started. here we provide the name of the folder where all of the uploaded
+//files will be stored. "dest: 'images'"
+//let create an endpoint to upload file
+//for supporting upload, we get access to the middleware from the multer library. 
+//upload.single() it will return a middleware which is we need to use. it requires single argument which is a name for upload
+//upload.single('upload')
+// 07:00
+/**
+* open postman add route in body select form-data in this select file and upload the file and use key as 'upload'
+when we hit send, then multer will going to look for the file  called upload which we specified in upload.single('upload') in the request middleware
+and then it save it into images directory, defined in  dest: 'images'
+which will be created automatically in projects. if things went well then file will be saved in /images dir
+but the file will be stored as binary data, because its name which is randomly generated
+*/
+app.post("/upload", upload.single('upload'), (req, res)=>{
+    res.status(200).send("worked")
+})
 
 
 // Loading React Client 
@@ -42,25 +69,6 @@ app.get('/sse-server', function(req, res){
 app.use(userRouter);
 app.use(taskRouter);
 
-
-/**API for creating a user 
- * @param Object
- * @return Object
-*/
-/*
-app.post("/v1/api/create_users", async (req, res)=>{
-    try{
-        let user = User(req.body)
-        await user.save();
-        return res.status(200).json({"msg":"User created", "data": null,"error" : false})
-    }catch(e){
-        console.log("e=============",e)
-        return res.status(500).json({"msg":"SERVER-ERROR", "data": e,"error" : true})
-    }    
-})
-*/
-
-
 app.get('*', function (req, res) {
     res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
 })
@@ -68,60 +76,5 @@ app.get('*', function (req, res) {
 
 app.listen(port, ()=>{
     console.log("server is running on", port)
+
 })
-
-
-
-/**Example for bcrypt for hashing password*/
-// const brcypt = require('bcryptjs')
-// const myFunctoin = async (pass) => {
-//     // bcrypt does indeed use promises
-//     const hashPass = await brcypt.hash(pass, 8)   //returns promise, takes 2 arguments (string, algorithm)
-//     console.log("password", pass)
-//     console.log("hash password", hashPass)
-
-//     //to check encrypted value
-//     const res = await brcypt.compare(pass, hashPass)
-//     console.log("password matched", res)
-
-// }
-
-
-/** example of JWT for tokens */
-// const myFunctoin = async () => {
-//     try{
-//         let token = jwt.sign({"id": "123456789"}, "myTaskApp", {expiresIn: '15 seconds'})
-//         console.log("token=========", token)
-        
-//         const data = jwt.verify(token, "myTaskApp")
-//         console.log("data=========", data)
-//     }catch(e){
-//         console.log(e)
-//     }
-// }
-
-/**Exampl of db relation find user through task*/
-// const myFunction = async () => {
-//     const Task = require('./src/model/task')
-//     try{
-//         const task = await Task.findById('5dad73a8c8ed4c38e338d3f2')
-//         await task.populate('owner').execPopulate()
-//         console.log('owner from populate===========', task.owner)
-//     }catch(e) { console.log("eroo=-===========",e)}
-// }
-
-/**Exampl of db relation find task through user*/
-const Task = require('./src/model/task')
-const myFunction = async () => {
-    const User = require('./src/model/user')
-    // 5dad54461d6b6628c0d36ad7 example user id
-    try{
-        const user = await User.findById('5dad54461d6b6628c0d36ad7')
-        await user.populate('tasks').execPopulate()
-        console.log("user=========", user)
-        console.log("user.task=========", user.tasks)
-    }catch(e) { console.log("eroo============",e)}
-}
-
-// myFunction()
-// myFunctoin("Red123!") for bcrypt

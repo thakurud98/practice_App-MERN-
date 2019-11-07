@@ -124,3 +124,60 @@
     }
 
     myFunctoin("Red12345!")
+
+
+
+
+/**Example for bcrypt for hashing password*/
+// const brcypt = require('bcryptjs')
+// const myFunctoin = async (pass) => {
+//     // bcrypt does indeed use promises
+//     const hashPass = await brcypt.hash(pass, 8)   //returns promise, takes 2 arguments (string, algorithm)
+//     console.log("password", pass)
+//     console.log("hash password", hashPass)
+
+//     //to check encrypted value
+//     const res = await brcypt.compare(pass, hashPass)
+//     console.log("password matched", res)
+
+// }
+
+
+/** example of JWT for tokens */
+// const myFunctoin = async () => {
+//     try{
+//         let token = jwt.sign({"id": "123456789"}, "myTaskApp", {expiresIn: '15 seconds'})
+//         console.log("token=========", token)
+        
+//         const data = jwt.verify(token, "myTaskApp")
+//         console.log("data=========", data)
+//     }catch(e){
+//         console.log(e)
+//     }
+// }
+
+/**Exampl of db relation find user through task*/
+// const myFunction = async () => {
+//     const Task = require('./src/model/task')
+//     try{
+//         const task = await Task.findById('5dad73a8c8ed4c38e338d3f2')
+//         await task.populate('owner').execPopulate()
+//         console.log('owner from populate===========', task.owner)
+//     }catch(e) { console.log("eroo=-===========",e)}
+// }
+
+/**Exampl of db relation find task through user*/
+const Task = require('./src/model/task')
+const myFunction = async () => {
+    const User = require('./src/model/user')
+    // 5dad54461d6b6628c0d36ad7 example user id
+    try{
+        const user = await User.findById('5dad54461d6b6628c0d36ad7')
+        await user.populate('tasks').execPopulate()
+        console.log("user=========", user)
+        console.log("user.task=========", user.tasks)
+    }catch(e) { console.log("eroo============",e)}
+}
+
+// myFunction()
+// myFunctoin("Red123!") for bcrypt

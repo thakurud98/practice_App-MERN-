@@ -34,12 +34,25 @@ router.get("/v1/api/task_by_id/:id", auth, async (req, res)=>{
     }
 })
 
-/**Get all tasks */
+/**Get all tasks 
+ * task/completed=true
+ * task/limit=2&skip=10
+ * task/sort=created_at:-1 / updated_at:-1
+ * asc = 1, desc =-1
+*/
 router.get("/v1/api/task", auth, async (req, res)=>{
     try{
-        
+        let match = {}
+        let options = {}
+        if(req.query.completed) match.completed = req.query.completed == 'true' ? true :  false
+        if(req.query.limit) options.limit = parseInt(req.query.limit)
+        if(req.query.skip) options.skip = parseInt(req.query.skip)
+        if(req.query.sort) {
+            let sortQuery = req.query.sort.split(":")
+            options.sort = { [sortQuery[0]] : parseInt(sortQuery[1])}
+        }
         //using populate
-        await req.user.populate('tasks').execPopulate()
+        await req.user.populate({ path: 'tasks', match, options}).execPopulate()
         return res.status(200).send({"msg":"Task Found", "data": req.user.tasks,"error" : false})
         //using find()
         // let task = await Task.find({owner: req.user._id})

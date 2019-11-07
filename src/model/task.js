@@ -24,7 +24,7 @@ const taskSchema = new mongoose.Schema({
         ref: 'User'
     }
     
-}, {collection: 'task'})
+}, {collection: 'task', timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}})
 
 
 

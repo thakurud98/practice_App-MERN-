@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
-}, { collection: 'user' })
+}, { collection: 'user', timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }})
 
 /**Virtual fields for relation with Task Collection */
 userSchema.virtual('tasks', {
@@ -100,6 +100,16 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+    next()
+})
+
+/**Pre method to remove task when user deletes its own data */
+userSchema.pre('remove', async function(next){
+    let user = this
+    /**deleting multiple tasks using just owner
+    * import Task
+    */
+    await Task.deleteMany({owner : user._id})
     next()
 })
 
