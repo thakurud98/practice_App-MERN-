@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 const port = process.env.PORT || 8080
 const userRouter = require('./src/routes/user');
 const taskRouter = require('./src/routes/task');
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, './client/public'));
 /**SOcial login setup */
 //Cors for accepting user HTTP request
 var corsOption = {
@@ -18,8 +18,8 @@ var corsOption = {
     exposedHeaders: ['x-auth-token']
 };
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 
 app.use(cors(corsOption))
@@ -64,8 +64,7 @@ app.use(userRouter);
 app.use(taskRouter);
 
 app.get('*', function (req, res) {
-    // res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
-    res.sendFile(path.join(__dirname, './client/public/index.html'));
+    res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
 })
 
 
