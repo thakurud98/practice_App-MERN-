@@ -2,6 +2,7 @@ const express = require('express')
 const router = new express.Router()
 const User = require('../model/user')
 const auth = require('../middleware/auth')
+const multer = require('multer')
 
 /********Creating User*********/
 /**API for creating a user 
@@ -118,6 +119,36 @@ router.post("/v1/api/logoutAll", auth, async (req, res)=>{
         return res.send({ msg: "Logged out successfully", data: null, error: false });
     }catch(e){
         return res.status(500).send({ msg: e.toString(), data: null, error: true });
+    }
+})
+
+//Configure file properties
+/** 
+ */
+const uploadImage = multer({
+    dest: 'avatars',
+    limits: {
+        fileSize: 1000000,
+    },
+    fileFilter(req, file, cb){
+        //using regex to check endpoints
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            return cb(new Error('Please upload a docx file'))
+        }
+        //return true as everything worked
+        cb(undefined, true)
+    }
+})
+
+/**API to upload user profile
+ * @param Object
+ * @returns Object
+*/
+router.post("/v1/api/me/avatar", auth, uploadImage.single('avatar'), async(req, res)=>{
+    try{
+        res.send("Worked")
+    }catch(e){
+        res.send("something went wrong")
     }
 })
 

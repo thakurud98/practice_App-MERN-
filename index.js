@@ -9,37 +9,31 @@ const port = 4500 || process.env.PORT
 const userRouter = require('./src/routes/user');
 const taskRouter = require('./src/routes/task');
 
+/**SOcial login setup */
+//Cors for accepting user HTTP request
+var corsOption = {
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    exposedHeaders: ['x-auth-token']
+};
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-app.use(cors())
+
+app.use(cors(corsOption))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 
-const multer = require('multer')
-//configure multer for files like only pdf's, images's doc's etc
-//we may hve to configure multer for multiple times for a single application depending on the needs
-//this is just for learning in the file, will allow any file to upload to the server
-const upload = multer({
-    dest: 'image'
-})
-//calling multer() with an instance, which is an option object where we provide all the configuration tool, for the moment we provide just one property
-//called 'dest' which is use for destination, and this is the only one we need ot get started. here we provide the name of the folder where all of the uploaded
-//files will be stored. "dest: 'images'"
-//let create an endpoint to upload file
-//for supporting upload, we get access to the middleware from the multer library. 
-//upload.single() it will return a middleware which is we need to use. it requires single argument which is a name for upload
-//upload.single('upload')
-// 07:00
-/**
-* open postman add route in body select form-data in this select file and upload the file and use key as 'upload'
-when we hit send, then multer will going to look for the file  called upload which we specified in upload.single('upload') in the request middleware
-and then it save it into images directory, defined in  dest: 'images'
-which will be created automatically in projects. if things went well then file will be saved in /images dir
-but the file will be stored as binary data, because its name which is randomly generated
-*/
-app.post("/upload", upload.single('upload'), (req, res)=>{
-    res.status(200).send("worked")
-})
+// const multer = require('multer')
+// const upload = multer({
+//     dest: 'image'
+// })
+// app.post("/upload", upload.single('upload'), (req, res)=>{
+//     res.status(200).send("worked")
+// })
 
 
 // Loading React Client 
