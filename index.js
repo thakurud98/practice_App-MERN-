@@ -5,10 +5,10 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 require('./mongoose')
 const jwt = require('jsonwebtoken')
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 const userRouter = require('./src/routes/user');
 const taskRouter = require('./src/routes/task');
-
+app.use(express.static(__dirname));
 /**SOcial login setup */
 //Cors for accepting user HTTP request
 var corsOption = {
@@ -64,7 +64,8 @@ app.use(userRouter);
 app.use(taskRouter);
 
 app.get('*', function (req, res) {
-    res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
+    // res.sendFile('./index.html', { root: path.join(__dirname, './client/public') });
+    res.sendFile(path.join(__dirname, './client/public/index.html'));
 })
 
 
