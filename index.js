@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 require('./mongoose')
 const jwt = require('jsonwebtoken')
-const port = 4500 || process.env.PORT
+const port = process.env.PORT || 3000
 const userRouter = require('./src/routes/user');
 const taskRouter = require('./src/routes/task');
 
@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 // Loading React Client 
 app.set('client', path.join(__dirname, '/client'));
 app.use('/dist', express.static(path.resolve(__dirname, './dist')));
-// app.use('/css', express.static(path.resolve(__dirname, './client/public')));
+app.use('/css', express.static(path.resolve(__dirname, './client/public/css')));
 // app.use('/images', express.static(path.resolve(__dirname, './client/public/images')));
 // app.use('/js', express.static(path.resolve(__dirname, './client/public/js')));
 

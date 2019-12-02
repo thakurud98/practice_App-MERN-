@@ -14,8 +14,8 @@ export const LOGOUT = API_URL + 'logout/'
 // Social Credentials
 export const GOOGLE_CLIENT_ID = '122659192363-5r5tvvl0mms3beft64ikovlrupgrugnj.apps.googleusercontent.com'
 export const GOOGLE_CLIENT_SECRET = 'gZuLt6ND2ctjO0wI1KhLfXSh'
-export const GOOGLE_CALLBACK_URL = 'http://localhost:4500/auth/google/callback'
+export const GOOGLE_CALLBACK_URL = 'http://localhost:3000/auth/google/callback'
 
 export const FACEBOOK_APP_ID = '415899259090150'
 export const FACEBOOK_APP_SECRET = '063e66933371ac85ecc916881a7061d0'
-export const FACEBOOK_CALLBACK_URL = 'http://localhost:4500/api/auth/facebook/callback'
+export const FACEBOOK_CALLBACK_URL = 'http://localhost:3000/api/auth/facebook/callback'
