@@ -1,3 +1,11 @@
+/**
+ * Run robo3t /usr/local/bin/robomongo/robo3t-1.3.1-linux-x86_64-7419c406/bin$ ./robo3t
+ * Run mongodb mongo
+ */
+
+
+
+
 /**Inserting a document into collection */
         db.collection('user').insertOne({
             name: 'uday Singh', age: 24

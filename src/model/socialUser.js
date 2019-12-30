@@ -4,6 +4,11 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
     var SocialUserSchema = new Schema({
+        fullName: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         email: {
             type: String,
             required: true,
@@ -32,7 +37,7 @@ var Schema = mongoose.Schema;
             },
             select: false
         }
-    }, {collection: 'task', timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}})
+    }, {collection: 'social', timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}})
     /**
      * virtuals: If you use toJSON() or toObject() mongoose will not include virtuals by default. This includes the output of calling JSON.stringify() on a Mongoose document, because JSON.stringify() calls toJSON(). Pass { virtuals: true } to either toObject() or toJSON().
      * getters: Mongoose getters and setters allow you to execute custom logic when getting or setting a property on a Mongoose document. Getters let you transform data in MongoDB into a more user friendly form, and setters let you transform user data before it gets to MongoDB., Suppose you have a User collection and you want to obfuscate user emails to protect your users' privacy
@@ -77,7 +82,8 @@ var Schema = mongoose.Schema;
                     email: profile.emails[0].value,
                     facebookProvider: {
                         id: profile.id,
-                        token: accessToken
+                        token: accessToken,
+                        refreshToken
                     }
                 });
 
@@ -95,6 +101,8 @@ var Schema = mongoose.Schema;
 
     /**Google handeling */
     SocialUserSchema.statics.upsertGoogleUser = function(accessToken, refreshToken, profile, cb) {
+        console.log("profile===============",profile)
+        console.log("refreshToken===============",refreshToken)
         var that = this;
         return this.findOne({
             'googleProvider.id': profile.id
@@ -106,7 +114,8 @@ var Schema = mongoose.Schema;
                     email: profile.emails[0].value,
                     googleProvider: {
                         id: profile.id,
-                        token: accessToken
+                        token: accessToken,
+                        refreshToken
                     }
                 });
 
@@ -123,7 +132,7 @@ var Schema = mongoose.Schema;
     };
     
     
-    const SocialUserSchema = mongoose.model("SocialUserSchema", SocialUserSchema)
+    const SocialUser = mongoose.model("SocialUserSchema", SocialUserSchema)
     
     
-    module.exports = SocialUserSchema
+    module.exports = SocialUser

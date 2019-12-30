@@ -3,26 +3,17 @@ import ReactDOM from 'react-dom'
 import ProjectRouter from './projectRouter'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./public/css/main.css"
-
+import {Provider} from 'react-redux'
+import store from './containers/store/store';
 
 const App = () => {
-    return (<div >
+    return (
+    <Provider store = {store}><div >
             <ProjectRouter />
-    </div>)
+    </div> </Provider>)
 }
 
 ReactDOM.render(
         <App />,
     document.getElementById("root")
 )
-
-// import notify from './notification'
-// import './main.css'
-// notify("hello there uday")
-
-// class form {
-//     constructor(){
-//         alert('ES6 worked trying to wokr')
-//     }
-// }
-// new form()

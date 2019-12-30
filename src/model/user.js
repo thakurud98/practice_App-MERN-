@@ -46,7 +46,10 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    avatar: {
+        type: Buffer
+    }
 }, { collection: 'user', timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }})
 
 /**Virtual fields for relation with Task Collection */

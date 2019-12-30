@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
-
-export default class Landing extends Component {
+import {connect} from 'react-redux';
+import sampleAction from '../containers/store/action/sampleAction'
+class Landing extends Component {
     constructor(props){
         super(props)
         this.state={
 
         }
     }
-
+componentWillMount() {
+   this.props.sampleAction()
+}
     render(){
+        console.log("props",this.props)
         return(
             <div class="container-fluid">
             <h2>Landing Page</h2>
@@ -16,3 +20,8 @@ export default class Landing extends Component {
         )
     }
 }
+const masStateProps = state => ({
+    porp:state.sampleReducer
+})
+
+export default connect(masStateProps,{sampleAction})(Landing)

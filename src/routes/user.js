@@ -126,14 +126,14 @@ router.post("/v1/api/logoutAll", auth, async (req, res)=>{
 /** 
  */
 const uploadImage = multer({
-    dest: 'avatars',
+    // dest: 'avatars', //removing dest to send image to route to store in DB as binary data
     limits: {
         fileSize: 1000000,
     },
     fileFilter(req, file, cb){
         //using regex to check endpoints
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
-            return cb(new Error('Please upload a docx file'))
+            return cb(new Error('Please upload an image file'))
         }
         //return true as everything worked
         cb(undefined, true)
@@ -145,11 +145,11 @@ const uploadImage = multer({
  * @returns Object
 */
 router.post("/v1/api/me/avatar", auth, uploadImage.single('avatar'), async(req, res)=>{
-    try{
-        res.send("Worked")
-    }catch(e){
-        res.send("something went wrong")
-    }
+    req.user.avatar = req.file.buffer
+    await req.user.save()
+    res.send("Worked")
+},(error, req, res, next)=>{
+    res.status(400).send({'error': error.message})
 })
 
 module.exports = router
